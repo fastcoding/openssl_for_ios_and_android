@@ -21,7 +21,8 @@ set -u
 source ./build-android-common.sh
 
 if [ -z ${version+x} ]; then 
-  version="1.1.1t"
+  #version="1.1.1t"
+  version="3.3.2"
 fi
 
 init_log_color
@@ -46,11 +47,11 @@ LIB_NAME="openssl-$version"
 LIB_DEST_DIR="${pwd_path}/../output/android/openssl-universal"
 
 echo "https://www.openssl.org/source/${LIB_NAME}.tar.gz"
-
+OSSL_URL="https://github.com/openssl/openssl/releases/download/$LIB_NAME/$LIB_NAME.tar.gz"
 # https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz
 # https://github.com/openssl/openssl/archive/OpenSSL_1_1_1f.tar.gz
 rm -rf "${LIB_DEST_DIR}" "${LIB_NAME}"
-[ -f "${LIB_NAME}.tar.gz" ] || curl https://www.openssl.org/source/${LIB_NAME}.tar.gz >${LIB_NAME}.tar.gz
+[ -f "${LIB_NAME}.tar.gz" ] || curl -LO $OSSL_URL #https://www.openssl.org/source/${LIB_NAME}.tar.gz 
 
 set_android_toolchain_bin
 
@@ -62,9 +63,11 @@ function configure_make() {
 
     log_info "configure $ABI start..."
 
-    if [ -d "${LIB_NAME}" ]; then
+    if [ ! -d "${LIB_NAME}" ]; then
         rm -fr "${LIB_NAME}"
+    	#tar xfz "${LIB_NAME}.tar.gz"
     fi
+	
     tar xfz "${LIB_NAME}.tar.gz"
     pushd .
     cd "${LIB_NAME}"
@@ -79,28 +82,34 @@ function configure_make() {
     mkdir -p ${OUTPUT_ROOT}/log
 
     set_android_toolchain "openssl" "${ARCH}" "${ANDROID_API}"
+	# jazz: let openssl do this! 
     set_android_cpu_feature "openssl" "${ARCH}" "${ANDROID_API}"
+	
 
     export ANDROID_NDK_HOME=${ANDROID_NDK_ROOT}
     echo ANDROID_NDK_HOME=${ANDROID_NDK_HOME}
 
     android_printf_global_params "$ARCH" "$ABI" "$ABI_TRIPLE" "$PREFIX_DIR" "$OUTPUT_ROOT"
 
+
     if [[ "${ARCH}" == "x86_64" ]]; then
 
-        ./Configure android-x86_64 --prefix="${PREFIX_DIR}"
+        ./Configure android-x86_64 --prefix="${PREFIX_DIR}" -D__ANDROID_API__=$api
+
 
     elif [[ "${ARCH}" == "x86" ]]; then
 
-        ./Configure android-x86 --prefix="${PREFIX_DIR}"
+        ./Configure android-x86 --prefix="${PREFIX_DIR}" -D__ANDROID_API__=$api
+
 
     elif [[ "${ARCH}" == "arm" ]]; then
 
-        ./Configure android-arm --prefix="${PREFIX_DIR}"
+        ./Configure android-arm --prefix="${PREFIX_DIR}" -D__ANDROID_API__=$api
+
 
     elif [[ "${ARCH}" == "arm64" ]]; then
 
-        ./Configure android-arm64 --prefix="${PREFIX_DIR}"
+        ./Configure android-arm64 --prefix="${PREFIX_DIR}"  -D__ANDROID_API__=$api
 
     else
         log_error "not support" && exit 1
@@ -110,7 +119,7 @@ function configure_make() {
 
     make clean >"${OUTPUT_ROOT}/log/${ABI}.log"
     # ABr: do *not* generate soname; see https://stackoverflow.com/a/33869277
-    make SHLIB_EXT='.so' CALC_VERSIONS="SHLIB_COMPAT=; SHLIB_SOVER=" MAKE="make -e" all >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+    make SHLIB_EXT='.so' CALC_VERSIONS="SHLIB_COMPAT=; SHLIB_SOVER=" MAKE="make" all >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
     the_rc=$?
     if [ $the_rc -eq 0 ] ; then
         make SHLIB_EXT='.so' install_sw >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1

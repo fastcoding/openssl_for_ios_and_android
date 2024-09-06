@@ -148,13 +148,22 @@ function set_android_toolchain() {
   local build_host=$(get_build_host_internal "$arch")
   local clang_target_host=$(get_clang_target_host "$arch" "$api")
 
-  export AR=${build_host}-ar
+  export AR=llvm-ar #${build_host}-ar
   export CC=${clang_target_host}-clang
   export CXX=${clang_target_host}-clang++
-  export AS=${build_host}-as
-  export LD=${build_host}-ld
-  export RANLIB=${build_host}-ranlib
-  export STRIP=${build_host}-strip
+  if [ -x ${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/$(get_toolchain)/bin/${build_host}-as ]; then 
+  	export AS=${build_host}-as
+  else 
+  	export AS=llvm-as 
+  fi
+  if [ -x ${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/$(get_toolchain)/bin/${build_host}-ld ]; then 
+  	export LD=${build_host}-ld
+  else 
+	export LD=ld #${clang_target_host}-clang
+  fi
+
+  export RANLIB=llvm-ranlib #${build_host}-ranlib
+  export STRIP=llvm-strip
 }
 
 function get_common_includes() {
@@ -170,6 +179,16 @@ function get_common_linked_libraries() {
 }
 
 function set_android_cpu_feature() {
+  local name=$1
+  local arch=$(get_android_arch $2)
+  local api=$3
+  export CFLAGS="-fPIC"
+  export CXXFLAGS="-std=c++14 -Os"
+  export LDFLAGS="$(get_common_linked_libraries ${api} ${arch})"
+  export CPPFLAGS="${CFLAGS} $(get_common_includes)  -DANDROID -D__ANDROID_API__=${api}"
+}
+
+function orig_set_android_cpu_feature() {
   local name=$1
   local arch=$(get_android_arch $2)
   local api=$3

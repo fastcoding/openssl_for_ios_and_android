@@ -21,7 +21,7 @@ set -u
 source ./build-android-common.sh
 
 if [ -z ${version+x} ]; then 
-  version="7.74.0"
+  version="8.9.1"
 fi
 
 init_log_color
@@ -45,6 +45,7 @@ LIB_DEST_DIR="${pwd_path}/../output/android/curl-universal"
 
 echo "https://github.com/curl/curl/releases/download/${LIB_VERSION}/${LIB_NAME}.tar.gz"
 
+# https://github.com/curl/curl/releases/download/curl-8_9_1/curl-8.9.1.tar.gz
 # https://curl.haxx.se/download/${LIB_NAME}.tar.gz
 # https://github.com/curl/curl/releases/download/curl-7_69_0/curl-7.69.0.tar.gz
 # https://github.com/curl/curl/releases/download/curl-7_68_0/curl-7.68.0.tar.gz
@@ -85,7 +86,6 @@ function configure_make() {
 
     OPENSSL_OUT_DIR="${pwd_path}/../output/android/openssl-${ABI}"
     NGHTTP2_OUT_DIR="${pwd_path}/../output/android/nghttp2-${ABI}"
-
     export LDFLAGS="${LDFLAGS} -L${OPENSSL_OUT_DIR}/lib -L${NGHTTP2_OUT_DIR}/lib"
     # export LDFLAGS="-Wl,-rpath-link,-L${NGHTTP2_OUT_DIR}/lib,-L${OPENSSL_OUT_DIR}/lib $LDFLAGS "
 
@@ -93,20 +93,20 @@ function configure_make() {
 
     if [[ "${ARCH}" == "x86_64" ]]; then
 
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --disable-doc --enable-shared --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     elif [[ "${ARCH}" == "x86" ]]; then
 
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --disable-doc --enable-shared --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     elif [[ "${ARCH}" == "arm" ]]; then
 
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --disable-doc --enable-shared  --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     elif [[ "${ARCH}" == "arm64" ]]; then
 
         # --enable-shared need nghttp2 cpp compile
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-shared --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --disable-doc --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-shared --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     else
         log_error "not support" && exit 1

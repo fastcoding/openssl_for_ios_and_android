@@ -21,7 +21,7 @@ set -u
 source ./build-android-common.sh
 
 if [ -z ${version+x} ]; then 
-  version="1.42.0"
+  version="1.63.0"
 fi
 
 init_log_color
@@ -75,29 +75,29 @@ function configure_make() {
     mkdir -p ${OUTPUT_ROOT}/log
 
     set_android_toolchain "nghttp2" "${ARCH}" "${ANDROID_API}"
-    set_android_cpu_feature "nghttp2" "${ARCH}" "${ANDROID_API}"
+    #set_android_cpu_feature "nghttp2" "${ARCH}" "${ANDROID_API}"
 
     export ANDROID_NDK_HOME=${ANDROID_NDK_ROOT}
     echo ANDROID_NDK_HOME=${ANDROID_NDK_HOME}
 
-    android_printf_global_params "$ARCH" "$ABI" "$ABI_TRIPLE" "$PREFIX_DIR" "$OUTPUT_ROOT"
+    #android_printf_global_params "$ARCH" "$ABI" "$ABI_TRIPLE" "$PREFIX_DIR" "$OUTPUT_ROOT"
 
     if [[ "${ARCH}" == "x86_64" ]]; then
 
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-app --disable-threads --enable-lib-only >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-app --disable-threads  --enable-shared=no --enable-lib-only >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     elif [[ "${ARCH}" == "x86" ]]; then
 
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-app --disable-threads --enable-lib-only >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-app --disable-threads  --enable-shared=no --enable-lib-only >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     elif [[ "${ARCH}" == "arm" ]]; then
 
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-app --disable-threads --enable-lib-only >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-app --disable-threads  --enable-shared=no --enable-lib-only >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     elif [[ "${ARCH}" == "arm64" ]]; then
 
         # --disable-lib-only need xml2 supc++ stdc++14
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-app --disable-threads --enable-lib-only >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-app --disable-threads --enable-shared=no --enable-lib-only >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     else
         log_error "not support" && exit 1

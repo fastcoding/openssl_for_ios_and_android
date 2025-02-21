@@ -54,11 +54,11 @@ jobs:
 
           # OpenSSL version
           - component: openssl
-            version: "1.1.1d"
+            version: "3.2.2"
 
           # nghttp2 version
           - component: nghttp2
-            version: "1.40.0"
+            version: "1.63.0"
 
       fail-fast: false
 
@@ -140,7 +140,7 @@ jobs:
 
           # cURL version
           - component: curl
-            version: "7.68.0"
+            version: "8.9.1"
 
       fail-fast: false
 

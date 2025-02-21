@@ -91,9 +91,9 @@ function set_ios_cpu_feature() {
     armv7)
         export CC="xcrun -sdk iphoneos clang -arch armv7"
         export CXX="xcrun -sdk iphoneos clang++ -arch armv7"
-        export CFLAGS="-arch armv7 -target armv7-ios-darwin -march=armv7 -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -Wno-unused-function -fstrict-aliasing -Oz -Wno-ignored-optimization-argument -isysroot ${sysroot} -fembed-bitcode -miphoneos-version-min=${ios_min_target} -I${sysroot}/usr/include"
-        export LDFLAGS="-arch armv7 -target armv7-ios-darwin -march=armv7 -isysroot ${sysroot} -fembed-bitcode -L${sysroot}/usr/lib "
-        export CXXFLAGS="-std=c++14 -arch armv7 -target armv7-ios-darwin -march=armv7 -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -fstrict-aliasing -fembed-bitcode -miphoneos-version-min=${ios_min_target} -I${sysroot}/usr/include"
+        export CFLAGS="-arch armv7 -target armv7-ios-darwin -march=armv7 -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -Wno-unused-function -fstrict-aliasing -Oz -Wno-ignored-optimization-argument -isysroot ${sysroot} -miphoneos-version-min=${ios_min_target} -I${sysroot}/usr/include"
+        export LDFLAGS="-arch armv7 -target armv7-ios-darwin -march=armv7 -isysroot ${sysroot} -L${sysroot}/usr/lib "
+        export CXXFLAGS="-std=c++14 -arch armv7 -target armv7-ios-darwin -march=armv7 -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -fstrict-aliasing -miphoneos-version-min=${ios_min_target} -I${sysroot}/usr/include"
         ;;
     arm64)
         export CC="xcrun -sdk iphoneos clang -arch arm64"
@@ -113,14 +113,14 @@ function set_ios_cpu_feature() {
     x86)
         export CC="xcrun -sdk iphonesimulator clang -arch x86"
         export CXX="xcrun -sdk iphonesimulator clang++ -arch x86"
-        export CFLAGS="-arch x86 -target x86-ios-darwin -march=i386 -msse4.2 -mpopcnt -m64 -mtune=intel -Wno-unused-function -fstrict-aliasing -O2 -Wno-ignored-optimization-argument -isysroot ${sysroot} -mios-simulator-version-min=${ios_min_target} -I${sysroot}/usr/include"
+        export CFLAGS="-arch x86 -target x86-ios-darwin -march=i386 -msse4.2 -mpopcnt -m64 -Wno-unused-function -fstrict-aliasing -O2 -Wno-ignored-optimization-argument -isysroot ${sysroot} -mios-simulator-version-min=${ios_min_target} -I${sysroot}/usr/include"
         export LDFLAGS="-arch x86 -target x86-ios-darwin -march=i386 -isysroot ${sysroot} -L${sysroot}/usr/lib "
         export CXXFLAGS="-std=c++14 -arch x86 -target x86-ios-darwin -march=i386 -msse4.2 -mpopcnt -m64 -mtune=intel -fstrict-aliasing -mios-simulator-version-min=${ios_min_target} -I${sysroot}/usr/include"
         ;;
     x86-64)
         export CC="xcrun -sdk iphonesimulator clang -arch x86_64"
         export CXX="xcrun -sdk iphonesimulator clang++ -arch x86_64"
-        export CFLAGS="-arch x86_64 -target x86_64-ios-darwin -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel -Wno-unused-function -fstrict-aliasing -O2 -Wno-ignored-optimization-argument -isysroot ${sysroot} -mios-simulator-version-min=${ios_min_target} -I${sysroot}/usr/include"
+        export CFLAGS="-arch x86_64 -target x86_64-ios-darwin -march=x86-64 -msse4.2 -mpopcnt -m64 -Wno-unused-function -fstrict-aliasing -O2 -Wno-ignored-optimization-argument -isysroot ${sysroot} -mios-simulator-version-min=${ios_min_target} -I${sysroot}/usr/include"
         export LDFLAGS="-arch x86_64 -target x86_64-ios-darwin -march=x86-64 -isysroot ${sysroot} -L${sysroot}/usr/lib "
         export CXXFLAGS="-std=c++14 -arch x86_64 -target x86_64-ios-darwin -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel -fstrict-aliasing -mios-simulator-version-min=${ios_min_target} -I${sysroot}/usr/include"
         ;;

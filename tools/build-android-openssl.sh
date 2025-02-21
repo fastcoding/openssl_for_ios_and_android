@@ -46,8 +46,9 @@ LIB_VERSION="OpenSSL_$(echo $version | sed 's/\./_/g')"
 LIB_NAME="openssl-$version"
 LIB_DEST_DIR="${pwd_path}/../output/android/openssl-universal"
 
-echo "https://www.openssl.org/source/${LIB_NAME}.tar.gz"
 OSSL_URL="https://github.com/openssl/openssl/releases/download/$LIB_NAME/$LIB_NAME.tar.gz"
+echo "$OSSL_URL"
+
 # https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz
 # https://github.com/openssl/openssl/archive/OpenSSL_1_1_1f.tar.gz
 rm -rf "${LIB_DEST_DIR}" "${LIB_NAME}"

@@ -21,7 +21,8 @@ set -u
 source ./build-ios-common.sh
 
 if [ -z ${version+x} ]; then 
-  version="1.1.1d"
+#  version="1.1.1d"
+   version="3.3.2"
 fi
 
 TOOLS_ROOT=$(pwd)
@@ -45,13 +46,13 @@ LIB_DEST_DIR="${pwd_path}/../output/ios/openssl-universal"
 
 init_log_color
 
-echo "https://www.openssl.org/source/${LIB_NAME}.tar.gz"
-
+OSSL_URL="https://github.com/openssl/openssl/releases/download/$LIB_NAME/$LIB_NAME.tar.gz"
+echo "$OSSL_URL"
 # https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz
 # https://github.com/openssl/openssl/archive/OpenSSL_1_1_1f.tar.gz
 DEVELOPER=$(xcode-select -print-path)
 rm -rf "${LIB_DEST_DIR}" "${LIB_NAME}"
-[ -f "${LIB_NAME}.tar.gz" ] || curl https://www.openssl.org/source/${LIB_NAME}.tar.gz >${LIB_NAME}.tar.gz
+[ -f "${LIB_NAME}.tar.gz" ] ||  curl -LO $OSSL_URL
 
 function configure_make() {
 
@@ -93,7 +94,7 @@ function configure_make() {
 
         # openssl1.1.1d can be set normally, 1.1.0f does not take effect
         ./Configure iphoneos-cross no-shared --prefix="${PREFIX_DIR}"
-        sed -ie "s!-fno-common!-fno-common -fembed-bitcode !" "Makefile"
+        #sed -ie "s!-fno-common!-fno-common -fembed-bitcode !" "Makefile"
 
     elif [[ "${ARCH}" == "arm64" ]]; then
 

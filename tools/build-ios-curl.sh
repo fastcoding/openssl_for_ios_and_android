@@ -21,7 +21,8 @@ set -u
 source ./build-ios-common.sh
 
 if [ -z ${version+x} ]; then 
-  version="7.68.0"
+#  version="7.68.0"
+  version="8.9.1"
 fi
 
 TOOLS_ROOT=$(pwd)
